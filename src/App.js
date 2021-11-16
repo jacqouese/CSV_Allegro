@@ -3,13 +3,14 @@ import { useDropzone } from 'react-dropzone';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import './App.css';
-import replacePolishLetters from './helpers/replacePolishLetters';
 
 import fileDrop from './assets/fileDrop.svg';
 import Dialog from './Dialog';
 
 function App() {
     const [list, setList] = useState([]);
+    const [listWithComment, setListWithComment] = useState([]);
+
     const [finalList, setFinalList] = useState([]);
 
     const [fileName, setFileName] = useState('Przeciągnij plik CSV tutaj');
@@ -31,26 +32,23 @@ function App() {
         onDrop,
     });
 
-    // run python script
+    // run python script and set data to state
     const runPy = () => {
         window.api.getThing().then((res) => {
             var data = res;
             data = JSON.parse(data);
 
-            data.forEach((elem, i) => {
-                elem['id'] = i;
-                elem['name'] = replacePolishLetters(elem['name']);
-            });
-
-            setList(data);
+            setList(data[0]);
+            setListWithComment(data[1]);
         });
     };
 
-    const table = () => {
+    // generate table with jsPDF and show saving window
+    const table = (data) => {
         const doc = new jsPDF();
-
+        doc.text('Keyoda Edyta Szamotulska | Listopad 2021', 15, 10);
         doc.autoTable({
-            body: [...finalList],
+            body: [...data],
             columns: [
                 { header: 'Name', dataKey: 'name' },
                 { header: 'Note', dataKey: 'note' },
@@ -65,53 +63,54 @@ function App() {
     const prepareTable = () => {
         document.querySelector('.dialog-container').style.display = 'flex';
         var currentInx = curr;
-        var elemsToAdd = [];
-        for (var i = curr; i < list.length; i++) {
-            if (list[i].note !== '') {
-                // if there IS a comment, then display it and break out of the loop
-                setComment(list[currentInx].note);
-                setCurr(currentInx + 1);
 
-                break;
-            } else {
-                // if there IS NOT a comment, then just add to finalList
+        setComment(listWithComment[currentInx].note);
+        setCurr(currentInx + 1);
+    };
 
-                elemsToAdd.push(list[currentInx]);
-                currentInx += 1;
+    const finalSorting = () => {
+        // get data with comments and without comments
+        let data = [...finalList, ...list];
 
-                if (i >= list.length - 1) {
-                    setCurr(currentInx);
-                    break;
-                }
-            }
-        }
-        // append iterated list to finalList
-        console.log(finalList);
-        setFinalList([...finalList, ...elemsToAdd]);
+        // sort data by id
+        data.sort(function (a, b) {
+            var keyA = a['id'],
+                keyB = b['id'];
+            // Compare the 2 dates
+            if (keyA < keyB) return -1;
+            if (keyA > keyB) return 1;
+            return 0;
+        });
+
+        // call table generation function
+        table(data);
     };
 
     // handle dialog YES / NO
     const onYes = () => {
-        if (list.length > curr) {
-            setFinalList(list[curr - 1]);
-            setTimeout(() => {
-                prepareTable();
-            }, 1000);
+        if (listWithComment.length > curr) {
+            // if the user chose YES, add the current one to state and then show another comment
+            setFinalList([...finalList, listWithComment[curr - 1]]);
+            prepareTable();
         } else {
-            table();
+            // if there is no more items left, call finalSorting function
+            setFinalList([...finalList, ...list]);
+            finalSorting();
         }
     };
 
     const onNo = () => {
-        if (list.length - 1 >= curr) {
-            // if the user chose YES, and there are items left
+        if (listWithComment.length > curr) {
+            // if the user chose NO, just show another comment
             prepareTable();
         } else {
-            // if the user chose NO, and there are NO items left
-            table();
+            // if there is no more items left, call finalSorting function
+            setFinalList([...finalList, ...list]);
+            finalSorting();
         }
     };
 
+    // debugging only
     useEffect(() => {
         console.log(finalList);
     }, [finalList]);
