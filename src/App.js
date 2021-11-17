@@ -10,13 +10,17 @@ import Dialog from './Dialog';
 function App() {
     const [list, setList] = useState([]);
     const [listWithComment, setListWithComment] = useState([]);
-
     const [finalList, setFinalList] = useState([]);
+
+    const [title, setTitle] = useState('');
+    const [date, setDate] = useState('');
 
     const [fileName, setFileName] = useState('Przeciągnij plik CSV tutaj');
 
     const [comment, setComment] = useState('');
     const [curr, setCurr] = useState(0);
+
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     // handle file upload
     const onDrop = useCallback((acceptedFiles) => {
@@ -27,20 +31,30 @@ function App() {
         drop.style.color = 'green';
 
         dropzone.style.borderColor = 'green';
+
+        runPy(acceptedFiles[0]['path']);
     }, []);
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
     });
 
     // run python script and set data to state
-    const runPy = () => {
-        window.api.getThing().then((res) => {
-            var data = res;
-            data = JSON.parse(data);
+    const runPy = (file) => {
+        window.api.getThing(file).then(
+            (res) => {
+                var data = res;
 
-            setList(data[0]);
-            setListWithComment(data[1]);
-        });
+                data = JSON.parse(data);
+
+                setList(data[0]);
+                setListWithComment(data[1]);
+
+                setIsButtonDisabled(false);
+            },
+            () => {
+                setIsButtonDisabled(true);
+            }
+        );
     };
 
     // generate table with jsPDF and show saving window
@@ -52,7 +66,7 @@ function App() {
             columns: [
                 { header: 'Name', dataKey: 'name' },
                 { header: 'Note', dataKey: 'note' },
-                { header: 'Total', dataKey: 'total' },
+                { header: 'Total with shipping', dataKey: 'total' },
                 { header: 'Shipping', dataKey: 'delivery' },
             ],
         });
@@ -110,10 +124,6 @@ function App() {
         }
     };
 
-    // debugging only
-    useEffect(() => {
-        console.log(finalList);
-    }, [finalList]);
     return (
         <div className="App">
             <Dialog
@@ -123,11 +133,10 @@ function App() {
                 onYes={onYes}
                 onNo={onNo}
             />
-            <button onClick={runPy}>Run</button>
             <h1>Przygotuj wykaz sprzedaży</h1>
             <p className="main-subtitle">
-                Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet
-                consectetur.
+                Wprowadź potrzebne dane, oraz naciśnij "GENERUJ WYKAZ", a
+                program przygotuje dla Ciebnie wykaz w formacie PDF
             </p>
             <div className="input-container">
                 <label className="smaller" htmlFor="">
@@ -164,14 +173,20 @@ function App() {
                             style={{ transform: 'scale(1.4)' }}
                         />
                         <p>{fileName}</p>
-                        <p className="smaller">
-                            Upewnij się, że plik zawiera wszystkie potrzebne
-                            kolumny
-                        </p>
+                        {isButtonDisabled ? (
+                            <p className="smaller">
+                                Upewnij się, że plik zawiera wszystkie potrzebne
+                                kolumny
+                            </p>
+                        ) : (
+                            <p className="smaller">Udało się</p>
+                        )}
                     </div>
                 )}
             </div>
-            <button onClick={prepareTable}>Generuj wykaz</button>
+            <button disabled={isButtonDisabled} onClick={prepareTable}>
+                Generuj wykaz
+            </button>
         </div>
     );
 }

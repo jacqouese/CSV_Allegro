@@ -1,12 +1,15 @@
 import csv
 import json
+import sys
 
 
 def convertCSV():
+    fileFromJS = sys.argv[1]
+
     withoutComment = []
     withComment = []
 
-    with open('or.csv', 'r', newline='', encoding='utf-8') as f:
+    with open(fileFromJS, 'r', newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f, delimiter=',', quotechar='|')
 
         for i, row in enumerate(reader):

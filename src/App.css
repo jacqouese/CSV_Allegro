@@ -14,11 +14,12 @@
 }
 
 h1 {
-    margin-bottom: 2rem;
+    margin: 2rem 0;
 }
 
 p.main-subtitle {
     margin-bottom: 3rem;
+    font-size: 90%;
 }
 
 .input-container {
@@ -31,6 +32,11 @@ p.main-subtitle {
 
 .smaller {
     font-size: 80%;
+}
+
+p.msg {
+    margin-bottom: 1rem;
+    color: red;
 }
 
 input {
@@ -116,6 +122,11 @@ button {
 
 button:hover {
     opacity: 0.9;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .dialog-buttons button {

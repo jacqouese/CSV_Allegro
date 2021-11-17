@@ -58,13 +58,19 @@ app.on('activate', () => {
     }
 });
 
-ipcMain.handle('get/thing', () => {
+ipcMain.handle('get/thing', (e, CSVFile) => {
     const pathToScript = path.join(__dirname, '../src/AllegroScript/main.py');
 
+    console.log(CSVFile);
+
     return new Promise((resolve, reject) => {
-        PythonShell.run(pathToScript, null, function (err, res) {
-            if (err) reject(err);
-            resolve(res);
-        });
+        PythonShell.run(
+            pathToScript,
+            { mode: 'text', args: [CSVFile] },
+            function (err, res) {
+                if (err) reject(err);
+                resolve(res);
+            }
+        );
     });
 });
