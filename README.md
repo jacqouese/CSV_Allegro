@@ -2,14 +2,14 @@
 ### PDF sales statement generator from Allegro CSV files
 
 
-This program takes CSV files generated from Allegro and transforms it into a easily readible pdf
+This program takes CSV files generated from Allegro and transforms it into an easily readible PDF
 
 ## Features include:
 - The program prompts you to choose whether you want to include an element if it has a comment
 - In the PDF, you get a section with every day's total, total without VAT and VAT value
 - Customizable company name on top of the PDF
 
-## Tech Stack
+## Tech
 
 - Calculations made in Python
 - GUI made in Electron with React
