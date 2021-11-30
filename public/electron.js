@@ -74,3 +74,21 @@ ipcMain.handle('get/thing', (e, CSVFile) => {
         );
     });
 });
+
+ipcMain.handle('get/sorted', (e, jsonData) => {
+    const pathToScript = path.join(
+        __dirname,
+        '../src/AllegroScript/finalSorting.py'
+    );
+
+    return new Promise((resolve, reject) => {
+        PythonShell.run(
+            pathToScript,
+            { mode: 'text', args: [jsonData] },
+            function (err, res) {
+                if (err) reject(err);
+                resolve(res);
+            }
+        );
+    });
+});

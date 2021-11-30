@@ -20,7 +20,7 @@ def convertCSV():
                     break
 
                 # Make sure the row is not None
-                if row['BuyerName'] is not None:
+                if row['BuyerName'] is not None and row['TotalToPayAmount'] is not '':
                     if row['SellerNotes'] == '':
                         withoutComment.append(
                             {
@@ -28,7 +28,8 @@ def convertCSV():
                                 'name': stripPolishLetters(row['BuyerName'].strip('"')), 
                                 'note': row['SellerNotes'].strip('"'),
                                 'total': row['TotalToPayAmount'].strip('"'),
-                                'delivery': row['DeliveryAmount'].strip('"')
+                                'delivery': row['DeliveryAmount'].strip('"'),
+                                'date': row['OrderDate'].strip('"')
                             }
                         )
                     else:
@@ -38,7 +39,8 @@ def convertCSV():
                                 'name': stripPolishLetters(row['BuyerName'].strip('"')), 
                                 'note': row['SellerNotes'].strip('"'),
                                 'total': row['TotalToPayAmount'].strip('"'),
-                                'delivery': row['DeliveryAmount'].strip('"')
+                                'delivery': row['DeliveryAmount'].strip('"'),
+                                'date': row['OrderDate'].strip('"')
                             }
                         )
 

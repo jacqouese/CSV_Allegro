@@ -6,6 +6,7 @@ import './App.css';
 
 import fileDrop from './assets/fileDrop.svg';
 import Dialog from './Dialog';
+import pdfGenerate from './pdfGenerate';
 
 function App() {
     const [list, setList] = useState([]);
@@ -38,6 +39,16 @@ function App() {
         onDrop,
     });
 
+    const handleDropzone = (reset = 0, title) => {
+        const dropzone = document.querySelector('.dropzone');
+        const drop = document.querySelector('.dropzone-inner p');
+
+        drop.innerHTML = title;
+        drop.style.color = reset ? '#aaaaaa' : 'green';
+
+        dropzone.style.borderColor = reset ? '#e7e7e7' : 'green';
+    };
+
     // run python script and set data to state
     const runPy = (file) => {
         window.api.getThing(file).then(
@@ -51,27 +62,11 @@ function App() {
 
                 setIsButtonDisabled(false);
             },
-            () => {
+            (err) => {
                 setIsButtonDisabled(true);
+                console.log(err);
             }
         );
-    };
-
-    // generate table with jsPDF and show saving window
-    const table = (data) => {
-        const doc = new jsPDF();
-        doc.text('Keyoda Edyta Szamotulska | Listopad 2021', 15, 10);
-        doc.autoTable({
-            body: [...data],
-            columns: [
-                { header: 'Name', dataKey: 'name' },
-                { header: 'Note', dataKey: 'note' },
-                { header: 'Total with shipping', dataKey: 'total' },
-                { header: 'Shipping', dataKey: 'delivery' },
-            ],
-        });
-
-        doc.save('table.pdf');
     };
 
     const prepareTable = () => {
@@ -86,18 +81,27 @@ function App() {
         // get data with comments and without comments
         let data = [...finalList, ...list];
 
-        // sort data by id
-        data.sort(function (a, b) {
-            var keyA = a['id'],
-                keyB = b['id'];
-            // Compare the 2 dates
-            if (keyA < keyB) return -1;
-            if (keyA > keyB) return 1;
-            return 0;
-        });
+        data = JSON.stringify(data);
 
-        // call table generation function
-        table(data);
+        // sort data by id
+        window.api.getSorted(data).then(
+            (res) => {
+                pdfGenerate(
+                    JSON.parse(res)[0],
+                    JSON.parse(res)[2],
+                    title,
+                    date
+                );
+
+                handleDropzone(1, 'Gotowe! Możesz wygenerować kolejny wykaz');
+                setIsButtonDisabled(true);
+                setCurr(0);
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+        // table(data);
     };
 
     // handle dialog YES / NO
@@ -135,20 +139,20 @@ function App() {
             />
             <h1>Przygotuj wykaz sprzedaży</h1>
             <p className="main-subtitle">
-                Wprowadź potrzebne dane, oraz naciśnij "GENERUJ WYKAZ", a
-                program przygotuje dla Ciebnie wykaz w formacie PDF
+                Wprowadź potrzebne dane, oraz naciśnij "GENERUJ WYKAZ". Program
+                przygotuje dla Ciebie wykaz w formacie PDF
             </p>
             <div className="input-container">
                 <label className="smaller" htmlFor="">
                     Widoczny tytuł
                 </label>
-                <input type="text" />
+                <input type="text" onBlur={(e) => setTitle(e.target.value)} />
             </div>
             <div className="input-container">
                 <label className="smaller" htmlFor="">
                     Miesiąc i rok
                 </label>
-                <input type="text" />
+                <input type="text" onBlur={(e) => setDate(e.target.value)} />
             </div>
             <div className="dropzone" {...getRootProps()}>
                 <input {...getInputProps()} />
