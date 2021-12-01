@@ -33,17 +33,15 @@ npm run e
 
 ## How to use
 
-### Open the program <br />
-![image](https://drive.google.com/uc?export=view&id=1EODTnwb6aXSr4QGD3Glhd0p-sZm32AHH)
-<br />
-<br />
-
-### Input into text fields and drag and drop a CSV file (only Allegro sale statements will get accepted) <br />
-![image](https://drive.google.com/uc?export=view&id=1cqDPkJAzKissKxjMgFx1WryAH7lxsPrq)
-<br />
+> Open the program <br />
+<img src="https://drive.google.com/uc?export=view&id=1EODTnwb6aXSr4QGD3Glhd0p-sZm32AHH" width="40%" alt="img1">
 <br />
 
-### Decide which ones to include (the entry needs to have a non-empty "SellerNotes" field to be shown in the prompt) <br />
-![image](https://drive.google.com/uc?export=view&id=1oyb842aZP3IXI3DPtewMTp9YLKxZXIJ_)
+> Input into text fields and drag and drop a CSV file (only Allegro sale statements will get accepted) <br />
+<img src="https://drive.google.com/uc?export=view&id=1cqDPkJAzKissKxjMgFx1WryAH7lxsPrq" width="40%" alt="img1">
+<br />
+
+> Decide which ones to include (the entry needs to have a non-empty "SellerNotes" field to be shown in the prompt) <br />
+<img src="https://drive.google.com/uc?export=view&id=1oyb842aZP3IXI3DPtewMTp9YLKxZXIJ_" width="40%" alt="img1">
 
 
