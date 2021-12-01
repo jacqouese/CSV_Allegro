@@ -30,3 +30,8 @@ Run Node and Electron
 npm start
 npm run e
 ```
+
+## How to use
+
+![image](https://drive.google.com/uc?export=view&id=1EODTnwb6aXSr4QGD3Glhd0p-sZm32AHH)
+
