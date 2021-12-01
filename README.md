@@ -44,4 +44,7 @@ npm run e
 > Decide which ones to include (the entry needs to have a non-empty "SellerNotes" field to be shown in the prompt) <br />
 <img src="https://drive.google.com/uc?export=view&id=1oyb842aZP3IXI3DPtewMTp9YLKxZXIJ_" width="40%" alt="img1">
 
-
+## CSV file requirements
+The CSV file need to be Allegro sales statment format. Following columns are needed for the program to do its job correctly:
+InvoiceName | InvoiceCompanyName | SellerStatus | BuyerName | TotalToPayAmount | SellerNotes | TotalToPayAmount | DeliveryAmount | OrderDate
+--- | --- | --- | --- |--- |--- |--- |--- |--- 
