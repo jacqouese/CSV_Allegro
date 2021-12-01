@@ -1,4 +1,4 @@
-# CSV Allegro
+# CSV Allegro &nbsp; <img src="https://img.shields.io/badge/status-finished-brightgreen" alt="status">
 ### PDF sales statement generator from Allegro CSV files
 
 
